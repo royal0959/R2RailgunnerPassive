@@ -62,27 +62,28 @@ namespace Plugin
             PInfo = Info;
 
             Asset.Init();
+            CustomItems.Init(); 
 
             // https://risk-of-thunder.github.io/R2Wiki/Mod-Creation/Assets/Localization/
             GameObject railBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerBody.prefab").WaitForCompletion();
 
             LanguageAPI.Add("RAILGUNNER_PASSIVE_CRITCHANCE_NAME", "Atom Stabilizer");
-            LanguageAPI.Add("RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION", $"Can <style=cIsDamage>Critically Strike</style>");
+            LanguageAPI.Add("RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION", $"Can gain <style=cIsDamage>Critical Strike Chance</style> and cause them normally. Gain <style=cIsDamage>0.5% attack speed</style> for every 1% <style=cIsDamage>Critical Strike Chance</style>.");
 
-            PassiveItemSkillDef mySkillDef = ScriptableObject.CreateInstance<PassiveItemSkillDef>();
+            PassiveItemSkillDef atomStabilizerSkill = ScriptableObject.CreateInstance<PassiveItemSkillDef>();
+            atomStabilizerSkill.passiveItem = CustomItems.ItemAttackSpeedWithCrit;
+            //atomStabilizerSkill.passiveItem = null;
 
-            mySkillDef.passiveItem = null;
-            //mySkillDef.icon = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperCenter.png").WaitForCompletion();
-            //mySkillDef.icon = Asset.mainBundle.LoadAsset<Sprite>("textAtomStabilizerIcon");
-            mySkillDef.icon = LoadSpriteFromDisk();
+            //atomStabilizerSkill.icon = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperCenter.png").WaitForCompletion();
+            //atomStabilizerSkill.icon = Asset.mainBundle.LoadAsset<Sprite>("textAtomStabilizerIcon");
+            atomStabilizerSkill.icon = LoadSpriteFromDisk();
 
-            mySkillDef.skillDescriptionToken = "RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION";
-            mySkillDef.skillName = "RAILGUNNER_PASSIVE_CRITCHANCE_NAME";
-            mySkillDef.skillNameToken = "RAILGUNNER_PASSIVE_CRITCHANCE_NAME";
-            ContentAddition.AddSkillDef(mySkillDef);
+            atomStabilizerSkill.skillDescriptionToken = "RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION";
+            atomStabilizerSkill.skillName = "RAILGUNNER_PASSIVE_CRITCHANCE_NAME";
+            atomStabilizerSkill.skillNameToken = "RAILGUNNER_PASSIVE_CRITCHANCE_NAME";
+            ContentAddition.AddSkillDef(atomStabilizerSkill);
 
             SkillLocator skillLocator = railBodyPrefab.GetComponent<SkillLocator>();
-
 
             foreach (GenericSkill skill in railBodyPrefab.GetComponentsInChildren<GenericSkill>())
             {
@@ -92,8 +93,8 @@ namespace Plugin
                     Array.Resize(ref family.variants, family.variants.Length + 1);
                     family.variants[^1] = new SkillFamily.Variant
                     {
-                        skillDef = mySkillDef,
-                        viewableNode = new ViewablesCatalog.Node(mySkillDef.skillNameToken, false)
+                        skillDef = atomStabilizerSkill,
+                        viewableNode = new ViewablesCatalog.Node(atomStabilizerSkill.skillNameToken, false)
                     };
                 }
             }
