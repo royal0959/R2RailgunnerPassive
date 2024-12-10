@@ -38,8 +38,6 @@ namespace Plugin
                 return;
             }
 
-            Log.Info($"Crit chance {sender.crit}");
-
             args.attackSpeedMultAdd += sender.crit * ATTACK_SPEED_PER_CRIT_CHANCE;
         }
 

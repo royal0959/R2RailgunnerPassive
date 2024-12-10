@@ -15,9 +15,6 @@ namespace Plugin
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     public class Main : BaseUnityPlugin
     {
-
-        public static PluginInfo PInfo { get; private set; }
-
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "royal";
         public const string PluginName = "RailgunnerCritChancePassive";
@@ -59,23 +56,16 @@ namespace Plugin
         {
             Log.Init(Logger);
 
-            PInfo = Info;
-
-            Asset.Init();
-            CustomItems.Init(); 
+            CustomItems.Init();
 
             // https://risk-of-thunder.github.io/R2Wiki/Mod-Creation/Assets/Localization/
             GameObject railBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerBody.prefab").WaitForCompletion();
 
             LanguageAPI.Add("RAILGUNNER_PASSIVE_CRITCHANCE_NAME", "Atom Stabilizer");
-            LanguageAPI.Add("RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION", $"Can gain <style=cIsDamage>Critical Strike Chance</style> and cause them normally. Gain <style=cIsDamage>0.5% attack speed</style> for every 1% <style=cIsDamage>Critical Strike Chance</style>.");
+            LanguageAPI.Add("RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION", $"Can gain <style=cIsDamage>Critical Strike Chance</style>. Gain <style=cIsDamage>0.5% attack speed</style> for every 1% <style=cIsDamage>Critical Strike Chance</style>.");
 
             PassiveItemSkillDef atomStabilizerSkill = ScriptableObject.CreateInstance<PassiveItemSkillDef>();
             atomStabilizerSkill.passiveItem = CustomItems.ItemAttackSpeedWithCrit;
-            //atomStabilizerSkill.passiveItem = null;
-
-            //atomStabilizerSkill.icon = Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/Railgunner/texCrosshairRailgunSniperCenter.png").WaitForCompletion();
-            //atomStabilizerSkill.icon = Asset.mainBundle.LoadAsset<Sprite>("textAtomStabilizerIcon");
             atomStabilizerSkill.icon = LoadSpriteFromDisk();
 
             atomStabilizerSkill.skillDescriptionToken = "RAILGUNNER_PASSIVE_CRITCHANCE_DESCRIPTION";
@@ -83,18 +73,34 @@ namespace Plugin
             atomStabilizerSkill.skillNameToken = "RAILGUNNER_PASSIVE_CRITCHANCE_NAME";
             ContentAddition.AddSkillDef(atomStabilizerSkill);
 
-            SkillLocator skillLocator = railBodyPrefab.GetComponent<SkillLocator>();
+            LanguageAPI.Add("RAILGUNNER_PASSIVE_NONE_NAME", "No Passive");
+            LanguageAPI.Add("RAILGUNNER_PASSIVE_NONE_DESCRIPTION", $"Can gain <style=cIsDamage>Critical Strike Chance</style>.");
+
+            PassiveItemSkillDef noPassiveSkill = ScriptableObject.CreateInstance<PassiveItemSkillDef>();
+            noPassiveSkill.passiveItem = null;
+
+            noPassiveSkill.icon = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/UI/texGenericSkillIcons.png").WaitForCompletion();
+
+            noPassiveSkill.skillDescriptionToken = "RAILGUNNER_PASSIVE_NONE_DESCRIPTION";
+            noPassiveSkill.skillName = "RAILGUNNER_PASSIVE_NONE_NAME";
+            noPassiveSkill.skillNameToken = "RAILGUNNER_PASSIVE_NONE_NAME";
+            ContentAddition.AddSkillDef(noPassiveSkill);
 
             foreach (GenericSkill skill in railBodyPrefab.GetComponentsInChildren<GenericSkill>())
             {
                 if ((skill._skillFamily as ScriptableObject).name.Contains("Passive"))
                 {
                     SkillFamily family = skill._skillFamily;
-                    Array.Resize(ref family.variants, family.variants.Length + 1);
-                    family.variants[^1] = new SkillFamily.Variant
+                    Array.Resize(ref family.variants, family.variants.Length + 2);
+                    family.variants[^2] = new SkillFamily.Variant
                     {
                         skillDef = atomStabilizerSkill,
                         viewableNode = new ViewablesCatalog.Node(atomStabilizerSkill.skillNameToken, false)
+                    };
+                    family.variants[^1] = new SkillFamily.Variant
+                    {
+                        skillDef = noPassiveSkill,
+                        viewableNode = new ViewablesCatalog.Node(noPassiveSkill.skillNameToken, false)
                     };
                 }
             }
