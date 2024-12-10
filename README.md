@@ -1,9 +1,10 @@
-# R2Boilerplate
+# RailgunnerCritChancePassive
 
-This repository contains a sample mod for Risk of Rain 2.
+![AtomStabilizer](https://github.com/royal0959/R2RailgunnerPassive/blob/main/AtomStabilizerStats.png?raw=true)
 
-You can clone this repository, open the visual studio solution file and compile it immediately.
+plus an extra 'No Passive' choice for players who don't want the attack speed bonus
+![NoPassive](https://github.com/royal0959/R2RailgunnerPassive/blob/main/NoPassiveStats.png?raw=true)
 
-This repository is meant to represent best practices for starting a simple mod.
-
-Once your mod get compiled, you can utilize the Thunderstore folder for later uploading it to https://thunderstore.io/c/riskofrain2/
+# Credits
+colonel - Idea
+me^2 - Icon for Atom Stabilizer

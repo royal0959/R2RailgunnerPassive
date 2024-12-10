@@ -1,7 +1,7 @@
 ﻿{
 	"name": "RailgunnerCritChancePassive",
 	"version_number": "1.0.0",
-	"website_url": "",
+	"website_url": "https://github.com/royal0959/R2RailgunnerPassive",
 	"description": "Gives railgunner a new passive that re-enables crit chance",
 	"dependencies": [
 		"bbepis-BepInExPack-5.4.2108",
